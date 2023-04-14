@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/angeelbarbosa/react-learn/issues"
   },
-  "homepage": "https://github.com/angeelbarbosa/react-learn#readme"
+  "homepage": "https://github.com/angeelbarbosa/react-learn#readme",
+  "dependencies": {
+    "canvas-confetti": "1.6.0"
+  }
 }
