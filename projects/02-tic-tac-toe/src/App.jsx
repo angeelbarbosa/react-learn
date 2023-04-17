@@ -1,23 +1,23 @@
-import {useState} from "react"
-import confetti from "canvas-confetti"
+import { useState } from 'react'
+import confetti from 'canvas-confetti'
 
-import { Square } from "./components/Square.jsx"
-import {TURNS} from "./constants.js"
-import {checkWinnerFrom, checkEndGame} from "./assets/logic/board.js"
-import {WinnerModal} from "./components/WinnerModal.jsx"
+import { Square } from './components/Square.jsx'
+import { TURNS } from './constants.js'
+import { checkWinnerFrom, checkEndGame } from './assets/logic/board.js'
+import { WinnerModal } from './components/WinnerModal.jsx'
 
+import './App.css'
 
-function App() {
+function App () {
   const [board, setBoard] = useState(() => {
     const boardFromStorage = window.localStorage.getItem('board')
-    return boardFromStorage ? JSON.parse(boardFromStorage): Array(9).fill(null)
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
   })
   const [turn, setTurn] = useState(() => {
     const turnFromStorage = window.localStorage.getItem('turn')
     return turnFromStorage ?? TURNS.X
   })
-  const [winner, setWinner] = useState(null) //null no = winner and false = tie
-
+  const [winner, setWinner] = useState(null) // null no = winner and false = tie
 
   const resetGame = () => {
     setBoard(Array(9).fill(null))
@@ -26,72 +26,63 @@ function App() {
 
     window.localStorage.removeItem('board')
     window.localStorage.removeItem('turn')
-
   }
 
-
-
-  const updateBoard = (index) =>{
+  const updateBoard = (index) => {
     // if index filled or haev a winner stop from updating
     if (board[index] || winner) return
     const newBoard = [...board]
     newBoard[index] = turn
     setBoard(newBoard)
-    //changing turn
+    // changing turn
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
-    //save game
+    // save game
     window.localStorage.setItem('board', JSON.stringify(newBoard))
     window.localStorage.setItem('turn', newTurn)
     const newWinner = checkWinnerFrom(newBoard)
-    if (newWinner){
+    if (newWinner) {
       confetti()
       setWinner(newWinner)
-
-    }else if (checkEndGame(newBoard)){
-      setWinner(false) //draw
+    } else if (checkEndGame(newBoard)) {
+      setWinner(false) // draw
     }
   }
 
-
-
-
   return (
-    <main className="board">
+    <main className='board'>
       <h1>TIC TAC TOE</h1>
-      <button onClick={resetGame} >RESTART</button>
+      <button onClick={resetGame}>RESTART</button>
       <section className='game'>
-      {
-        board.map((square, index) =>{
+        {
+        board.map((square, index) => {
           return (
             <Square
-            key={index}
-            index = {index}
-            updateBoard = {updateBoard}
+              key={index}
+              index={index}
+              updateBoard={updateBoard}
             >
               {square}
 
-              </Square>
+            </Square>
           )
         })
       }
 
       </section>
 
-        <section className="turn">
-          <Square isSelected={turn === TURNS.X}>
+      <section className='turn'>
+        <Square isSelected={turn === TURNS.X}>
           {TURNS.X}
-          </Square>
+        </Square>
 
-          <Square isSelected={turn === TURNS.O}>
+        <Square isSelected={turn === TURNS.O}>
           {TURNS.O}
-          </Square>
-        </section>
+        </Square>
+      </section>
 
-       <WinnerModal resetGame={resetGame} winner={winner}/>
+      <WinnerModal resetGame={resetGame} winner={winner} />
     </main>
   )
 }
-
-import './App.css'
 export default App
